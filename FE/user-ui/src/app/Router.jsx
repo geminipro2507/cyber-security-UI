@@ -3,6 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import Index from "../pages/Index";
 import Login from "../pages/Login";
+import SignUp from "../pages/SignUp";
 import Page404 from "../pages/Page404";
 import AccountManagement from "../pages/admin/AccountManagement";
 import AdminIndex from "../pages/admin/Index";
@@ -12,6 +13,7 @@ import Encode from "../pages/Encode";
 
 const routes = createBrowserRouter([
     { path: "/login", element: <Login /> },
+    { path: "/signup", element: <SignUp /> },
     { path: "/decode", element: <DeCode /> },
     { path: "/encode", element: <Encode /> },
 
