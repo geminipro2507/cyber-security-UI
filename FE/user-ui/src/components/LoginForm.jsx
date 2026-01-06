@@ -5,6 +5,7 @@ import JSEncrypt from "jsencrypt";
 function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [googleHover, setGoogleHover] = useState(false);
     const encodeKey = `-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAwa6tLPjIdFv8wsj/vKiK5CaKB4uDLUdB2KwPr9ofgPCdfUnTL757
 1Fzps0q6G/cuU+I8nhcMcmIN/rGRksSTDlto3AB18/lI/650rd7W7BzBmAh6lumh
@@ -38,7 +39,7 @@ pG/IT6lWOH+r/bxACXi1zKdt5r/bnUUhvwIDAQAB
                 <Col md={{ span: 4, offset: 4 }}>
                     <Card className="p-4 shadow">
                         <Card.Body>
-                            <h3 className="text-center mb-4">Login</h3>
+                            <h3 className="text-center mb-4">Welcome back</h3>
 
                             <Form onSubmit={handleSubmit}>
                                 <Form.Group className="mb-3">
@@ -67,6 +68,16 @@ pG/IT6lWOH+r/bxACXi1zKdt5r/bnUUhvwIDAQAB
                                     Login
                                 </Button>
                             </Form>
+
+                            <hr />
+
+                            <Button variant="primary" className="w-100 mb-2">
+                                <i className="fab fa-facebook"></i> Login with Facebook
+                            </Button>
+
+                            <Button variant="outline-primary" className="w-100 shadow" style={{ backgroundColor: googleHover ? '#f8f9fa' : 'white', borderColor: '#4285F4', color: '#4285F4' }} onMouseEnter={() => setGoogleHover(true)} onMouseLeave={() => setGoogleHover(false)}>
+                                <i className="fab fa-google"></i> Login with Google
+                            </Button>
                         </Card.Body>
                     </Card>
                 </Col>

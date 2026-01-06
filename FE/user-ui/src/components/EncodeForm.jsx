@@ -22,6 +22,15 @@ function EncodeForm() {
 
         const encrypted = encrypt.encrypt(plainText);
         if (encrypted) {
+            const blob = new Blob([encrypted], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'encrypted_data.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
             setEncodedText(encrypted);
             setError("");
         } else {
