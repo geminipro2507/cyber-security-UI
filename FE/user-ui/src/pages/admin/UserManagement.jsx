@@ -6,7 +6,7 @@ function UserManagement() {
     const [users, setUsers] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
-    const [formData, setFormData] = useState({ name: '', email: '', role: '' });
+    const [formData, setFormData] = useState({ email: '', password: '' });
 
     useEffect(() => {
         fetchUsers();
@@ -30,7 +30,7 @@ function UserManagement() {
 
     const handleEdit = (user) => {
         setEditingUser(user);
-        setFormData({ name: user.name, email: user.email, role: user.role });
+        setFormData({ email: user.email, password: '' });
         setShowModal(true);
     };
 
@@ -64,7 +64,7 @@ function UserManagement() {
     const handleSave = async () => {
         try {
             const method = editingUser ? 'PUT' : 'POST';
-            const url = editingUser ? `${process.env.REACT_APP_API_BASE_URL}/users/${editingUser.id}` : `${process.env.REACT_APP_API_BASE_URL}/admin/users`;
+            const url = editingUser ? `${process.env.REACT_APP_API_BASE_URL}/users/${editingUser.id}` : `${process.env.REACT_APP_API_BASE_URL}/users`;
             const response = await fetch(url, {
                 method,
                 headers: {
@@ -73,13 +73,19 @@ function UserManagement() {
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
-                Swal.fire('Success', editingUser ? 'User updated successfully!' : 'User added successfully!', 'success');
+                Swal.fire('Success', editingUser ? 'Mật khẩu đã được cấp lại thành công!' : 'User added successfully!', 'success');
                 setShowModal(false);
                 setEditingUser(null);
-                setFormData({ name: '', email: '', role: '' });
+                setFormData({ email: '', password: '' });
                 fetchUsers();
             } else {
-                Swal.fire('Error', 'Failed to save user', 'error');
+                const errorData = await response.json().catch(() => ({}));
+                const message = errorData.message || 'Failed to save user';
+                if (!editingUser && message.includes('Email đã tồn tại')) {
+                    Swal.fire('Information', message, 'info');
+                } else {
+                    Swal.fire('Error', message, 'error');
+                }
             }
         } catch (error) {
             Swal.fire('Error', 'Error saving user: ' + error.message, 'error');
@@ -91,14 +97,12 @@ function UserManagement() {
             <Row>
                 <Col>
                     <h2>User Management</h2>
-                    <Button variant="primary" onClick={() => setShowModal(true)}>Add User</Button>
+                    <Button variant="primary" onClick={() => { setEditingUser(null); setFormData({ email: '', password: '' }); setShowModal(true); }}>Add User</Button>
                     <Table striped bordered hover className="mt-3">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -106,9 +110,7 @@ function UserManagement() {
                             {users.map(user => (
                                 <tr key={user.id}>
                                     <td>{user.id}</td>
-                                    <td>{user.name}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.role}</td>
                                     <td>
                                         <Button variant="warning" size="sm" onClick={() => handleEdit(user)}>Edit</Button>{' '}
                                         <Button variant="danger" size="sm" onClick={() => handleDelete(user.id)}>Delete</Button>
@@ -122,32 +124,27 @@ function UserManagement() {
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{editingUser ? 'Edit User' : 'Add User'}</Modal.Title>
+                    <Modal.Title>{editingUser ? 'Cấp lại mật khẩu' : 'Add User'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            />
-                        </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
                                 type="email"
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                disabled={!!editingUser}
+                                required={!editingUser}
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Role</Form.Label>
+                            <Form.Label>{editingUser ? 'Mật khẩu mới' : 'Password'}</Form.Label>
                             <Form.Control
-                                type="text"
-                                value={formData.role}
-                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                type="password"
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                required
                             />
                         </Form.Group>
                     </Form>
