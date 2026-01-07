@@ -8,6 +8,7 @@ import Page404 from "../pages/Page404";
 import AccountManagement from "../pages/admin/AccountManagement";
 import AdminIndex from "../pages/admin/Index";
 import InfomationFromUser from "../pages/admin/InfomationFromUser";
+import UserManagement from "../pages/admin/UserManagement";
 import DeCode from "../pages/Decode";
 import Encode from "../pages/Encode";
 
@@ -24,6 +25,7 @@ const routes = createBrowserRouter([
             { path: "/admin", element: <AdminIndex /> },
             { path: "/admin/account-management", element: <AccountManagement /> },
             { path: "/admin/info-from-user", element: <InfomationFromUser /> },
+            { path: "/admin/user-management", element: <UserManagement /> },
         ]
     },
     { path: "*", element: <Page404 /> },
